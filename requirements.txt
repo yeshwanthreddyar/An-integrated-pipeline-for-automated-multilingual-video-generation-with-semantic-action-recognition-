@@ -1,0 +1,77 @@
+# -------- Core Machine Learning --------
+torch
+torchvision
+torchaudio
+tensorflow==2.15.0
+transformers
+sentencepiece
+accelerate
+
+# -------- Hugging Face --------
+huggingface_hub
+datasets
+evaluate
+
+# -------- FLask Backend --------
+flask
+flask_cors
+python-dotenv
+
+# -------- Translation + Tokenization --------
+sacremoses
+sacremoses
+sacred
+indic-nlp-library
+nltk
+sacremoses
+
+# -------- TTS (EdgeTTS) --------
+edge-tts
+pydub
+
+# -------- Video Processing --------
+moviepy
+opencv-python
+av
+imageio
+imageio-ffmpeg
+
+# -------- Runway Gen-2 API --------
+requests
+python-multipart
+
+# -------- Evaluation Metrics --------
+sacrebleu
+bert-score
+jiwer
+rouge-score
+numpy
+scipy
+pandas
+scikit-learn
+
+# -------- Plotting --------
+matplotlib
+seaborn
+
+# -------- Notebook Support --------
+ipykernel
+jupyter
+
+# -------- Action Recognition (R3D-18) --------
+torchvision==0.15.2
+einops
+
+# -------- FID / FVD --------
+clean-fid
+lpips
+
+# -------- Audio/Video Helpers --------
+soundfile
+librosa
+ffmpeg-python
+
+# -------- Misc Utilities --------
+tqdm
+regex
+requests

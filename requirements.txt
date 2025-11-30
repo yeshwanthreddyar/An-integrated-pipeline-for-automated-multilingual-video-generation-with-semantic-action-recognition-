@@ -2,7 +2,7 @@
 torch
 torchvision
 torchaudio
-tensorflow==2.15.0
+tensorflow
 transformers
 sentencepiece
 accelerate
@@ -75,3 +75,4 @@ ffmpeg-python
 tqdm
 regex
 requests
+

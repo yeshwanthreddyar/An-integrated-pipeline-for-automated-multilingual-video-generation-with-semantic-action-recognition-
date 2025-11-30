@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎞️ AI Video Generator + Action Classifier</title>
+
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #141E30, #243B55);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      color: #00d4ff;
+    }
+
+    label {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      text-align: left;
+      color: #ddd;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    input::placeholder { color: #bbb; }
+
+    .warning-box {
+      background: rgba(255, 107, 107, 0.2);
+      border: 1px solid #ff6b6b;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .warning-box label { color: #ff6b6b; font-weight: bold; margin-bottom: 5px; }
+    .warning-text { font-size: 0.8rem; color: #ff9999; margin: 5px 0 0 0; }
+
+    button {
+      background-color: #00d4ff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #141E30;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover { background-color: #00b3e6; transform: scale(1.03); }
+
+    #loader { display: none; margin-top: 1rem; font-size: 1rem; color: #ccc; }
+
+    .progress-container {
+      display: none;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+
+    .progress-bar { width: 0%; height: 10px; background: #00d4ff; transition: width 0.4s ease; }
+    .progress-text { font-size: 0.9rem; color: #ccc; margin-top: 8px; }
+
+    footer { margin-top: 2rem; font-size: 0.9rem; color: #aaa; }
+
+    video {
+      width: 100%;
+      margin-top: 1rem;
+      border-radius: 10px;
+      outline: none;
+      border: 2px solid #00d4ff;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #00d4ff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: #141E30;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .download-btn:hover { background-color: #00b3e6; transform: scale(1.05); }
+
+    .success-message, .simulation-message {
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .success-message { background: rgba(0, 212, 255, 0.1); border-color: #00d4ff; }
+    .simulation-message { background: rgba(255, 193, 7, 0.2); border-color: #ffc107; }
+
+    .language-info {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 0.9rem;
+    }
+
+    .predicted-box {
+      background: rgba(0, 255, 149, 0.15);
+      border: 1px solid #00ffa5;
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 20px;
+      color: #adffda;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .predicted-box h3 { margin: 0 0 6px; color: #00ffa5; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎬 AI Video Generator + Action Classifier</h1>
+    <p style="color: #ccc; margin-bottom: 1.5rem;">Safe Simulation Mode • No Credits Used</p>
+
+    <form method="POST" id="videoForm">
+      <label for="prompt">Enter your prompt:</label>
+      <input type="text" id="prompt" name="prompt" placeholder="e.g. A sunrise over the Himalayas" value="{{ prompt or '' }}" required>
+
+      <label for="language">Select Language:</label>
+      <select id="language" name="language" required>
+        {% for code, name in languages.items() %}
+          <option value="{{ code }}" {% if selected_lang == code %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="warning-box">
+        <label>
+          <input type="checkbox" id="use_real_api" name="use_real_api" value="true" {% if not is_simulation %}checked{% endif %}>
+          🚨 Use Real API (WILL USE CREDITS)
+        </label>
+        <p class="warning-text">Only enable this if you have credits and want to generate real videos.</p>
+      </div>
+
+      <button type="submit" onclick="showLoader()">Generate Video</button>
+    </form>
+
+    <div id="loader">⏳ Generating your AI video...</div>
+
+    <div class="progress-container"><div class="progress-bar"></div></div>
+    <div class="progress-text"></div>
+
+    {% if generated_video %}
+    <div class="output fade-in">
+      {% if is_simulation %}
+        <div class="simulation-message">
+          <h3>🎭 Simulation Complete!</h3>
+          <p>This was generated in <strong>simulation mode</strong> - no credits were used.</p>
+          <p>Enable "Use Real API" to generate actual AI videos with RunwayML.</p>
+        </div>
+      {% else %}
+        <div class="success-message">
+          <h3>✅ Video Generated Successfully!</h3>
+          <p>Your AI-generated video is ready to watch and download.</p>
+        </div>
+      {% endif %}
+
+      {% if prompt and selected_lang %}
+      <div class="language-info">
+        <strong>Original Prompt:</strong> {{ prompt }}<br>
+        <strong>Language:</strong> {{ languages[selected_lang] }}
+      </div>
+      {% endif %}
+
+      <video controls autoplay muted>
+        <source src="{{ url_for('serve_video', filename=generated_video) }}" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+
+      {% if predicted_action %}
+      <div class="predicted-box fade-in">
+        <h3>🧠 Predicted Action</h3>
+        <p style="font-size:1.2rem; font-weight:bold;">{{ predicted_action }}</p>
+      </div>
+      {% endif %}
+
+      <div style="margin-top: 1rem;">
+        <a href="{{ url_for('download', filename=generated_video) }}" class="download-btn" download>⬇️ Download Video</a>
+        <button onclick="location.reload()" style="margin-left: 10px; background: #636e72; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">🎬 Create Another</button>
+      </div>
+    </div>
+    {% endif %}
+
+    <footer>
+      <p>Built with ❤️ using <span style="color:#00d4ff;">Flask + RunwayML Veo 3.1 + Edge TTS + Video Classifier</span></p>
+      <p style="font-size: 0.8rem;">Supports: Hindi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Marathi, Odia, Punjabi, English</p>
+      <p style="font-size: 0.7rem; margin-top: 5px;">
+        <a href="/test-connection" style="color: #00d4ff;">Test RunwayML Connection</a> • 
+        <strong>Default: Safe Simulation Mode</strong>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    function showLoader() {
+      const loader = document.getElementById('loader');
+      const progressContainer = document.querySelector('.progress-container');
+      const progressBar = document.querySelector('.progress-bar');
+      const progressText = document.querySelector('.progress-text');
+      const form = document.getElementById('videoForm');
+      const useRealApi = document.getElementById('use_real_api').checked;
+
+      loader.style.display = 'block';
+      progressContainer.style.display = 'block';
+      form.style.display = 'none';
+
+      let steps = useRealApi
+        ? ["🌍 Translating text...", "🎬 Generating AI video (CREDITS)...", "🗣️ Creating voiceover...", "🔊 Merging audio/video...", "🎥 Finalizing video..."]
+        : ["🌍 Translating text...", "🎭 Simulating video (NO CREDITS)...", "🗣️ Creating voiceover...", "🔊 Merging audio/video...", "🎥 Finalizing simulation..."];
+
+      let progress = 0, step = 0;
+      const interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          progressText.innerText = useRealApi ? "✅ Almost done — rendering video..." : "🎭 Simulation complete!";
+        } else {
+          progress += 20;
+          progressBar.style.width = progress + "%";
+          progressText.innerText = steps[step] || "Processing...";
+          step++;
+        }
+      }, 2500);
+    }
+
+    window.addEventListener('load', function() {
+      const hasGeneratedVideo = {{ 'true' if generated_video else 'false' }};
+      if (hasGeneratedVideo) {
+        document.getElementById('loader').style.display = 'none';
+        const progressContainer = document.querySelector('.progress-container');
+        if (progressContainer) progressContainer.style.display = 'none';
+        document.getElementById('videoForm').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

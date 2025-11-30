@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>❌ Error - AI Video Generator</title>
+
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #141E30, #243B55);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      color: #ff6b6b;
+    }
+
+    .error-details {
+      background: rgba(255, 107, 107, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #ff6b6b;
+      text-align: left;
+    }
+
+    .solutions {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .solutions h3 {
+      color: #00d4ff;
+      margin-bottom: 10px;
+    }
+
+    .solutions ul {
+      padding-left: 20px;
+    }
+
+    .solutions li {
+      margin-bottom: 8px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #00d4ff;
+      color: #141E30;
+    }
+
+    .btn-secondary {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>❌ Video Generation Error</h1>
+    <p>We encountered an issue while creating your video</p>
+
+    <div class="error-details">
+      <h3>Error Details:</h3>
+      <p><strong>{{ error_message }}</strong></p>
+      {% if prompt %}
+      <p><strong>Your Prompt:</strong> {{ prompt }}</p>
+      {% endif %}
+    </div>
+
+    <div class="solutions">
+      <h3>🔧 Possible Solutions:</h3>
+      <ul>
+        <li><strong>Check API Key:</strong> Verify RUNWAY_API_KEY in your .env file</li>
+        <li><strong>Check Credits:</strong> Ensure you have sufficient RunwayML credits</li>
+        <li><strong>Use Simulation:</strong> Try simulation mode first to test the pipeline</li>
+        <li><strong>Test Connection:</strong> <a href="/test-connection" style="color: #00d4ff;">Test RunwayML connection</a></li>
+        <li><strong>Try Simpler Prompt:</strong> Some prompts may not work well</li>
+      </ul>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="window.history.back()">
+        ← Try Again
+      </button>
+      <a href="/test-connection" class="btn btn-secondary">
+        Test Connection
+      </a>
+      <a href="/" class="btn btn-secondary">
+        🏠 Home
+      </a>
+    </div>
+  </div>
+</body>
+</html>

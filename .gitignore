@@ -1,0 +1,66 @@
+# Big data / models (moved to pibb_assets_backup)
+processed_corpus/
+data_splits/
+final_data/
+mass_fine_tuned_models/
+data/
+dataset/
+datasets/
+checkpoints/
+weights/
+models/
+UCF-101/
+videos/
+outputs/
+results/
+runs/
+logs/
+chrome_user_data/
+final_videos/
+static/
+eval_data/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Huge binary artifacts
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.zip
+*.rar
+*.7z
+*.safetensors
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.csv
+*.hi
+*.bn
+*.ml
+*.ta
+*.te
+*.kn
+*.mr
+*.gu
+*.pa
+*.wav
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -59,7 +59,7 @@ ipykernel
 jupyter
 
 # -------- Action Recognition (R3D-18) --------
-torchvision==0.15.2
+torchvision
 einops
 
 # -------- FID / FVD --------
@@ -75,4 +75,5 @@ ffmpeg-python
 tqdm
 regex
 requests
+
 
